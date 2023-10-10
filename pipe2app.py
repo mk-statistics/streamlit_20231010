@@ -71,8 +71,16 @@ def main():
             accuracy = accuracy_score(y_test, y_pred)
 
         st.success(f"Accuracy: {accuracy:.2f}")
-        st.write(f"XGBoost params:")
-        st.json(pipeline.named_steps["xgbclassifier"].get_params())
+        col1, col2 = st.columns(2)
+        col1.write(f"XGBoost params:")
+        col1.json(pipeline.named_steps["xgbclassifier"].get_params())
+
+        col2.write("Feature importance")
+        features = pipeline.named_steps["xgbclassifier"].feature_importances_
+        features = dict(zip(X_train.columns, features))
+        col2.json(
+            dict(sorted(features.items(), key=lambda item: item[1], reverse=True))
+        )
 
 
 # Run the app
